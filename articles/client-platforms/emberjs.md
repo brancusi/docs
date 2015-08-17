@@ -38,7 +38,7 @@ To install this add-on and its dependencies, `cd` to your project directory and 
 
 ```
 ember install auth0-ember-simple-auth
-ember generate simple-lock
+ember generate scaffold-auth0
 ```
 
 __Note:__ If you are not already using ember-cli, see [ember-cli migration](http://www.ember-cli.com/user-guide/#migrating-an-existing-project-that-doesnt-yet-use-ember-cli).
@@ -48,15 +48,15 @@ __Note:__ If you are not already using ember-cli, see [ember-cli migration](http
 ```js
 // config/environment.js
 ENV['simple-auth'] = {
-  authorizer: 'simple-auth-authenticator:lock',
-  authenticationRoute: 'sign_in',
-  routeAfterAuthentication: 'home',
-  routeIfAlreadyAuthenticated: 'home'
+  authorizer: 'simple-auth-authorizer:jwt',
+  authenticationRoute: 'index',
+  routeAfterAuthentication: 'protected',
+  routeIfAlreadyAuthenticated: 'protected'
 }
 
-ENV['simple-lock'] = {
-  clientID: "<%= account.clientId %>",
-  domain: "<%= account.namespace %>"
+ENV['auth0-ember-simple-auth'] = {
+  clientID: "auth0_client_id",
+  domain: "auth0_domain"
 }
 ```
 
@@ -65,12 +65,14 @@ If using a content security policy, add
 
 ```js
 // config/environment.js
+
 ENV['contentSecurityPolicy'] = {
-  'font-src': "'self' data: https://cdn.auth0.com",
-  'style-src': "'self' 'unsafe-inline'",
-  'script-src': "'self' 'unsafe-eval' 'unsafe-inline' https://cdn.auth0.com",
-  'connect-src': "'self' http://localhost:* <%= account.namespace %>"
-};
+    'font-src': "'self' data: https://*.auth0.com",
+    'style-src': "'self' 'unsafe-inline'",
+    'script-src': "'self' 'unsafe-eval' https://*.auth0.com",
+    'img-src': '*.gravatar.com *.wp.com data:',
+    'connect-src': "'self' http://localhost:* https://your-app-domain.auth0.com"
+  };
 ```
 
 ### 3. Extend routes
